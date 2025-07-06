@@ -62,7 +62,7 @@ function playGame(){
         console.log("Computer wins this game. Better luck next time!!!");
     }
     else{
-        console.log("Its a tie game!!!");
+        console.log("It's a tie game!!!");
     }
 }
 
