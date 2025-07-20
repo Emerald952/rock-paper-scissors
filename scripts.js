@@ -1,69 +1,72 @@
+let humanScore = 0;
+let computerScore = 0;
+
 function getComputerChoice(){
     let ch = Math.floor(Math.random() * 3);
-    if(ch == 0) return "Rock";
-    else if(ch == 1) return "Paper";
-    else return "Scissors";
+    if(ch == 0) return "rock";
+    else if(ch == 1) return "paper";
+    else return "scissors";
 }
 
-function getHumanChoice(choice){
-    choice = choice.toLowerCase();
-    if(choice === "rock")return "Rock";
-    else if(choice === "paper") return "Paper";
-    else if(choice === "scissors")return "Scissors";
-    else return null;
-}
+const buttons = document.querySelectorAll('#human_choice button');
+buttons.forEach (button => {
+    button.addEventListener('click', (event) => {
+        let humanChoice = event.target.id;
+        const computerChoice = getComputerChoice();
+        playRound(humanChoice, computerChoice);
+    });
+});
 
+function disablebtn(){
+    buttons.forEach(button => {
+        button.disabled = true;
+    })
+}
 function playRound(humanChoice, computerChoice){
-    if(humanChoice == computerChoice )return "Tie";
-    else if(humanChoice === "Rock" && computerChoice === "Scissors"){
-        return "Human";
-    }
-    else if(humanChoice === "Paper" && computerChoice === "Rock"){
-        return "Human";
-    }
-    else if(humanChoice === "Scissors" && computerChoice === "Paper"){
-        return "Human";
-    }
-    else return "Computer";
-}
+    const resultContainer = document.querySelector('#result-container');
 
+    resultContainer.innerHTML = '';
 
-function playGame(){
-    let humanScore = 0;
-    let computerScore = 0;
-    let  i = 5;
-    while(i--){
-        let choice = prompt("Enter Your Choice (Rock, Paper, or Scissors):");
-        let humanSelection = getHumanChoice(choice);
-        if(humanSelection === null){
-            console.log("Invalid input!!! Refresh the Page and try again...");
-            return;
+    const result = document.createElement('p');
+    result.classList.add('result');
+    
+    if(humanChoice == computerChoice ){
+        result.innerHTML = `Tie!!! You both chose ${humanChoice} <br><br>` + `You: ${humanScore}   Computer: ${computerScore}`
+    }
+    else if((humanChoice === "rock" && computerChoice === "scissors") ||
+        (humanChoice === "paper" && computerChoice === "rock") || 
+        (humanChoice === "scissors" && computerChoice === "paper")){
+        humanScore += 1;
+        result.innerHTML = `You Won this round!!! Computer chose ${computerChoice}<br><br>` + `You: ${humanScore}   Computer: ${computerScore}`
+        if(humanScore == 5){
+            result.innerHTML += '<br><br><strong>You Won!!!</strong>';
+            disablebtn();
         }
+    }
+    else {
+        computerScore += 1;
+        result.innerHTML = `You lose! Computer chose ${computerChoice} <br><br>` + `Human: ${humanScore}   Computer: ${computerScore}`
+        if(computerScore == 5){
+            result.innerHTML += '<br><br><strong>You lose!!! Computer Won</strong>';
+            disablebtn();
+        }
+    }
+    resultContainer.appendChild(result);
 
-        const computerSelection = getComputerChoice();
-        let winner = playRound(humanSelection, computerSelection);
-        if(winner === "Human"){
-            console.log("You win this round!");
-            humanScore++;
-        }
-        else if(winner === "Computer"){
-            console.log("Computer wins this round!");
-            computerScore++;
-        }
-        else{
-            console.log("This round is tie!");
-        }
-    }
-    console.log("\n Final Result: ");
-    if(humanScore > computerScore){
-        console.log("YOU WIN THE GAME!!!! Congrats");
-    }
-    else if(humanScore < computerScore){
-        console.log("Computer wins this game. Better luck next time!!!");
-    }
-    else{
-        console.log("Its a tie game!!!");
+    if(humanScore == 5 || computerScore == 5){
+        const playAgain = document.createElement('button');
+        playAgain.textContent = 'Play Again';
+
+        playAgain.addEventListener("click", ()=>{
+            humanScore = 0;
+            computerScore = 0;
+
+            buttons.forEach(button => {
+                button.disabled = false;
+            })
+            resultContainer.innerHTML = '';
+
+        })
+        resultContainer.appendChild(playAgain);
     }
 }
-
-playGame();
