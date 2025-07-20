@@ -55,6 +55,7 @@ function playRound(humanChoice, computerChoice){
 
     if(humanScore == 5 || computerScore == 5){
         const playAgain = document.createElement('button');
+        playAgain.id = 'play-again';
         playAgain.textContent = 'Play Again';
 
         playAgain.addEventListener("click", ()=>{
